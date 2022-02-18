@@ -7,6 +7,7 @@ const productRouter = require('./routers/product');
 
 const app = express();
 
+app.use(express.json());
 app.use(userRouter);
 app.use(orderRouter);
 app.use(productRouter);
