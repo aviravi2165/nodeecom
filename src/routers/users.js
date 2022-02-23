@@ -1,9 +1,7 @@
 const express = require('express');
 const User = require('../models/user');
 const router = new express.Router;
-const bcrypt = require('bcrypt');
 const { auth } = require('../middleware/auth');
-const { route } = require('express/lib/application');
 
 router.post('/user/signup', async (req, res) => {
     try {
@@ -51,17 +49,26 @@ router.get('/user/detail', auth, async (req, res) => {
     res.send(req.user);
 });
 
-router.post('/user/update', auth, async (req, res) => {
+router.patch('/user/update', auth, async (req, res) => {
     const allowedFields = ['name', 'email', 'contact', 'password', 'role', 'address'];
-    const curUser = req.user.toObject();
-    let user = {};
+    const user = await User.findById(req.user._id);
     allowedFields.forEach(field => {
-        if (curUser.hasOwnProperty(field)) {
-            user[field] = curUser[field];
+        if (user.toObject().hasOwnProperty(field)) {
+            user[field] = req.body[field];
         }
     });
-    console.log('new user',user)
+    await user.save();
+    res.status(200).send(user);
+});
 
+router.delete('/user/delete', auth, async (req, res) => {
+    try{
+        const deletedUser = await User.findByIdAndDelete(req.user._id);
+        if(!deletedUser) throw new Error("User cannot be deleted");
+        res.send(deletedUser);
+    }catch(e){
+        res.status(400).send();
+    }
 });
 
 module.exports = router;
