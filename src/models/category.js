@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const User = require('./user');
 
 const categorySchema = new mongoose.Schema({
     name: {
@@ -10,7 +11,8 @@ const categorySchema = new mongoose.Schema({
         default: "0"
     },
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
     }
 });
 
