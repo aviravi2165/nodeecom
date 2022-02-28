@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 const Product = require('./product');
-
+const User = require('./user');
 const orderSchema = new mongoose.Schema({
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
+        ref:"User"
     },
     invoice_id: {
         type: Number,
