@@ -49,6 +49,15 @@ const orderSchema = new mongoose.Schema({
     }]
 });
 
+orderSchema.methods.toJSON = function(){
+    const order = this.toObject();
+    delete order.user_id.password;
+    delete order.user_id.tokens;
+    delete order.details.owner;
+    console.log(order)
+    return order;
+}
+
 const Order = new mongoose.model("Order",orderSchema);
 
 module.exports = Order;

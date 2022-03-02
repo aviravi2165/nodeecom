@@ -8,11 +8,11 @@ const categorySchema = new mongoose.Schema({
     },
     parent: {
         type: String,
-        default: "0"
+        default:"0"
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
     }
 });
 
