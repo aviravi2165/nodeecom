@@ -1,15 +1,17 @@
 const Order = require('../models/order');
+const ApiError = require('../errors/apiError');
+const ApiSuccess = require('../success/apiSuccess');
 
-const placeOrder = async (req, res) => {
+const placeOrder = async (req, res, next) => {
     try {
         const order = new Order({ ...req.body, user_id: req.user._id });
         await order.save();
-        res.send(order);
+        next(ApiSuccess.created(order));
     } catch (e) {
-        console.log(e);
+        next(ApiError.badRequest(e.message));
     }
 };
-const getOrderDetail = async (req, res) => {
+const getOrderDetail = async (req, res, next) => {
     try {
         const order = await Order.find({ _id: req.params.id, user_id: req.user._id }).populate('user_id').populate({
             path: 'details.product_id',
@@ -21,35 +23,35 @@ const getOrderDetail = async (req, res) => {
             }
         });
         if (order.length < 1) throw new Error("No order found!");
-        res.send(order);
+        next(ApiSuccess.ok(order));
     } catch (e) {
-        console.log(e);
+        next(ApiError.badRequest(e.message));
     }
 };
-const deleteOrder = async (req, res) => {
+const deleteOrder = async (req, res, next) => {
     try {
         const order = await Order.findOneAndDelete({ _id: req.params.id, user_id: req.user._id }).populate('user_id').populate('details.product_id');
         if (order.length < 1) throw new Error("No order found!");
-        res.send(order);
+        next(ApiSuccess.ok(order));
     } catch (e) {
-        console.log(e);
+        next(ApiError.badRequest(e.message));
     }
 };
-const getAllOrder = async (req, res) => {
+const getAllOrder = async (req, res, next) => {
     try {
         const orders = await Order.find({ user_id: req.user._id }).populate('user_id').populate('details.product_id');
-        res.send(orders);
+        next(ApiSuccess.ok(order));
     } catch (e) {
-        console.log(e)
+        next(ApiError.badRequest(e.message));
     }
 };
-const updateOrder = async (req, res) => {
+const updateOrder = async (req, res, next) => {
     try {
         await Order.findOneAndUpdate({ _id: req.params.id, user_id: req.user._id }, { status: req.body.status }).populate('user_id');
         const order = await Order.find({ _id: req.params.id, user_id: req.user._id });
-        res.send(order);
+        next(ApiSuccess.ok(order));
     } catch (e) {
-        console.log(e);
+        next(ApiError.badRequest(e.message));
     }
 };
 

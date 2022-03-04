@@ -1,52 +1,54 @@
 const User = require('../models/user');
+const ApiError = require('../errors/apiError');
+const ApiSuccess = require('../success/apiSuccess');
 
-const signUpUser = async (req, res) => {
+const signUpUser = async (req, res, next) => {
     try {
         const user = new User(req.body);
         const token = await user.generateToken();
-        res.status(201).send({ user, token });
+        next(ApiSuccess.created({ user, token }));
     } catch (e) {
-        res.status(400).send(e.message);
+        next(ApiError.badRequest(e.message));
     }
 }
 
-const userLogin = async (req, res) => {
+const userLogin = async (req, res, next) => {
     try {
         const credential = req.body;
         const user = await User.confirmCredential(credential.email, credential.password);
         const token = await user.generateToken();
-        res.status(202).send({ user, token });
+        next(ApiSuccess.accepted({ user, token }));
     } catch (e) {
-        res.status(404).send(e.message);
+        next(ApiError.badRequest(e.message));
     }
 }
 
-const userLogout = async (req, res) => {
+const userLogout = async (req, res, next) => {
     try {
         const tokens = req.user.tokens;
         req.user.tokens = tokens.filter(token => token.token !== req.token);
         await req.user.save();
-        res.send();
+        next(ApiSuccess.ok());
     } catch (e) {
-        res.status(400).send(e.message);
+        next(ApiError.badRequest(e.message));
     }
 }
 
-const userLogoutAll = async (req, res) => {
+const userLogoutAll = async (req, res, next) => {
     try {
         req.user.tokens = [];
         await req.user.save();
-        res.send();
+        next(ApiSuccess.ok());
     } catch (e) {
-        res.status(400).send(e.message);
+        next(ApiError.badRequest(e.message));
     }
 }
 
-const getUserDetail = async (req, res) => {
-    res.send(req.user);
+const getUserDetail = async (req, res, next) => {
+    next(ApiSuccess.ok(req.user));
 }
 
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
     const allowedFields = ['name', 'email', 'contact', 'password', 'role', 'address'];
     const user = await User.findById(req.user._id);
     allowedFields.forEach(field => {
@@ -55,16 +57,16 @@ const updateUser = async (req, res) => {
         }
     });
     await user.save();
-    res.status(200).send(user);
+    next(ApiSuccess.ok(user));
 }
 
-const deletedUser = async (req, res) => {
+const deletedUser = async (req, res, next) => {
     try {
         const deletedUser = await User.findByIdAndDelete(req.user._id);
         if (!deletedUser) throw new Error("User cannot be deleted");
-        res.send(deletedUser);
+        next(ApiSuccess.ok(deletedUser));
     } catch (e) {
-        res.status(400).send();
+        next(ApiError.badRequest(e.message));
     }
 }
 
