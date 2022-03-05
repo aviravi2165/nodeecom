@@ -1,0 +1,9 @@
+{
+    "tabWidth": 4,
+    "printWidth": 30,
+    "bracketSameLine":false,
+    "proseWrap":"always",
+    "htmlWhitespaceSensitivity":"strict",
+    "trailingComma":"es5",
+    "quoteProps":"consistent"
+}

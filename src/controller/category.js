@@ -29,9 +29,27 @@ const updateCategory = async (req, res, next) => {
     }
 }
 
+//sort=fieldName:ARC/DSC
+//limit=10
+//skip=page number
 const listCategory = async (req, res, next) => {
     try {
-        const list = await Category.find({}).populate('createdBy');
+        let limit = {};
+        let skip = {};
+        let sort = {};
+
+        if (req.query.limit) {
+            limit = req.query.limit;
+        }
+        if (req.query.skip) {
+            skip = (req.query.skip - 1) * limit;
+        }
+        if (req.query.sort) {
+            const sortOn = req.query.sort.split(':');
+            sort[sortOn[0]] = sortOn[1] == "DSC" ? -1 : 1;
+        }
+        const list = await Category.find({}).populate('createdBy').sort(sort).limit(limit).skip(skip);
+        if (list.length < 1) throw new Error("No Records Found");
         next(ApiSuccess.ok(list));
     } catch (e) {
         next(ApiError.badRequest(e.message));

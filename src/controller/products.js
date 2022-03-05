@@ -13,8 +13,10 @@ const addNewProduct = async (req, res, next) => {
 }
 
 
-// sort=field_ASC/DSC
+// sort=fieldName_ASC/DSC
 //limit=50
+//skip=2
+//match=fieldName_value
 const listProducts = async (req, res, next) => {
     try {
         let limit;
@@ -26,16 +28,22 @@ const listProducts = async (req, res, next) => {
             const sortOn = req.query.sort.split('_');
             sortParam[sortOn[0]] = sortOn[1] === 'D' ? -1 : 1;
         }
-        if(req.query.limit){
+        if (req.query.limit) {
             limit = Number(req.query.limit);
         }
-        if(req.query.skip){
-            skip = Number(req.query.skip)-1;
+        if (req.query.skip) {
+            skip = (Number(req.query.skip) - 1) * limit;
         }
-
-
-        const products = await Product.find({})
+        if (req.query.match) {
+            const allowedFields = ['name', 'uom', 'owner', 'categoryId'];
+            const matchOn = req.query.match.split("_");
+            if (!allowedFields.some(field => field === matchOn[0]))
+                throw new Error("Match field is not allowed");
+            match[matchOn[0]] = matchOn[1];
+        }
+        const products = await Product.find(match)
             .populate('owner')
+            .populate('categoryId')
             .sort(sortParam)
             .limit(limit)
             .skip(skip);
