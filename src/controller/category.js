@@ -5,12 +5,18 @@ const ApiSuccess = require('../success/apiSuccess');
 
 const addCategory = async (req, res, next) => {
     try {
+        let data = {};
+        const allowedFields = ['name', 'parent'];
+        allowedFields.forEach(allowed => {
+            if (req.body.hasOwnProperty(allowed)) {
+                data[allowed] = req.body[allowed];
+            }
+        });
         const category = new Category({
-            ...req.body,
+            ...data,
             createdBy: req.user._id
         });
         await category.save();
-
         next(ApiSuccess.created(category));
     } catch (e) {
         next(ApiError.badRequest(e.message));
@@ -37,7 +43,6 @@ const listCategory = async (req, res, next) => {
         let limit = {};
         let skip = {};
         let sort = {};
-
         if (req.query.limit) {
             limit = req.query.limit;
         }
@@ -49,7 +54,9 @@ const listCategory = async (req, res, next) => {
             sort[sortOn[0]] = sortOn[1] == "DSC" ? -1 : 1;
         }
         const list = await Category.find({}).populate('createdBy').sort(sort).limit(limit).skip(skip);
-        if (list.length < 1) throw new Error("No Records Found");
+        if (list.length < 1) {
+            throw new Error("No Records Found")
+        };
         next(ApiSuccess.ok(list));
     } catch (e) {
         next(ApiError.badRequest(e.message));
