@@ -92,10 +92,39 @@ const getSpecificProduct = async (req, res, next) => {
     }
 }
 
+const uploadProductImage = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        if (!['image/jpg', 'image/png'].some(mime => mime === req.file.mimetype)) {
+            throw new Error('Only JPG and PNG allowed');
+        }
+        if (req.file.size > 5000000) {
+            throw new Error('make to upload file less than 5MB');
+        }
+        const product = await Product.findByIdAndUpdate(id, { image: req.file.buffer });
+        next(ApiSuccess.ok(product));
+    } catch (e) {
+        next(ApiError.badRequest(e.message));
+    }
+}
+
+const showProductImage = async (req,res) => {
+    const id = req.params.id;
+    const product = await Product.findById(id).select('name image');
+    let image = "";
+    if(product.image) {
+        image = product.image;
+    }
+    res.set('Content-Type','image/jpg');
+    res.send(image);
+}
+
 module.exports = {
     addNewProduct,
     listProducts,
     updateProduct,
     deleteProduct,
-    getSpecificProduct
+    getSpecificProduct,
+    uploadProductImage,
+    showProductImage
 };

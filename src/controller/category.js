@@ -72,9 +72,46 @@ const getCategory = async (req, res, next) => {
         next(ApiError.badRequest(e.message));
     }
 }
+
+const uploadCategory = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        if (!['image/jpeg', 'image/png'].some(mime => mime === req.file.mimetype)) {
+            throw new Error('Only JPG and PNG allowed');
+        }
+        if (req.file.size > 5000000) {
+            throw new Error('make to upload file less than 5MB');
+        }
+        const category = await Category.findByIdAndUpdate(id, { image: req.file.buffer });
+        if (!category) {
+            throw new Error("No data found");
+        }
+        next(ApiSuccess.ok(category));
+    } catch (e) {
+        next(ApiError.badRequest(e.message));
+    }
+}
+
+const showCategoryImage = async (req, res) => {
+        const id = req.params.id;
+        const category = await Category.findById(id).select('name image');
+        let image;
+        if(category.image){
+            image = category.image;
+        }
+        else{
+            image = "";
+        }
+        res.set('Content-Type','image/jpg');
+        res.send(image);
+}
+
+
 module.exports = {
     addCategory,
     updateCategory,
     listCategory,
-    getCategory
+    getCategory,
+    uploadCategory,
+    showCategoryImage
 }

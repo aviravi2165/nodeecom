@@ -51,6 +51,9 @@ const userSchema = new mongoose.Schema({
         trim: true,
         enum: [1, 2, 3, 4, 5]
     },
+    forgot:{
+        type:String
+    },
     tokens: [
         {
             token: {
@@ -67,6 +70,7 @@ userSchema.methods.toJSON = function(){
     const updatedUser = this.toObject();
     delete updatedUser.tokens;
     delete updatedUser.password;
+    delete updatedUser.profileImage;
     return updatedUser;
 };
 

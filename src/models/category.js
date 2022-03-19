@@ -8,7 +8,10 @@ const categorySchema = new mongoose.Schema({
     },
     parent: {
         type: String,
-        default:"0"
+        default: "0"
+    },
+    image: {
+        type: Buffer
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
@@ -16,6 +19,10 @@ const categorySchema = new mongoose.Schema({
     }
 });
 
+categorySchema.methods.toJSON = function(){
+    const updatedCategory = this.toObject();
+    return updatedCategory;
+}
 
 const Category = new mongoose.model("Category", categorySchema);
 

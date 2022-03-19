@@ -5,6 +5,7 @@ const orderRouter = require('./routers/order');
 const cartRouter = require('./routers/cart');
 const productRouter = require('./routers/product');
 const categoryRouter = require('./routers/category');
+const welcomeRouter = require('./routers/welcome');
 const apiErrorHandler = require('./errors/apiErrorHandler');
 const apiSuccessHandler = require('./success/apiSuccessHandler');
 const ApiError = require('./errors/apiError');
@@ -12,6 +13,8 @@ const ApiError = require('./errors/apiError');
 const app = express();
 
 app.use(express.json());
+
+app.use(welcomeRouter);
 app.use(userRouter);
 app.use(productRouter);
 app.use(categoryRouter);
