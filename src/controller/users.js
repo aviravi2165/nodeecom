@@ -109,17 +109,17 @@ const sendForgotPasswordLink = async (req, res, next) => {
         if (!user) {
             throw new Error("User not found");
         }
-        const forgotToken = jwt.sign({ _id: user._id.toString() }, process.env.JWTTOKEN);
-        const body = `<h1>Hi ${user.name}!</h1><div><a href="">Click Here!</a> to proceed for reseting password</div><div>Cheers</div><div>NodeEcom</div>`;
+        const forgotToken = jwt.sign({ _id: user._id.toString() }, process.env.JWTTOKEN, { expiresIn: '7d' });
+        const body = `<h1>Hi ${user.name}!</h1><div><a href="${req.headers.host}/user/resetpassword/${user._id}/${forgotToken}">Click Here!</a> to proceed for reseting password</div><div>If link doesn't work copy this link and paste it to address bar - ${req.headers.host}/user/resetpassword/${user._id}/${forgotToken}</div><div>Cheers</div><div>NodeEcom</div>`;
         const subject = "Request for Password Reset";
-        const to = user.email;
-        const from = "NodeECom<no Reply>";
-        const mailStatus = mailNow(from, to, subject, body);
+        const to = req.body.email;
+        const from = "no-reply@fivesdigital.com";
+        const mailStatus = await mailNow(from, to, subject, body);
         if (!mailStatus) {
             throw new Error("Something went wrong. Please Contact your administrator.");
         }
         const userTokenSaved = await User.findByIdAndUpdate(user.id, { forgot: forgotToken });
-        if(!userTokenSaved) {
+        if (!userTokenSaved) {
             throw new Error("Something went wrong. Please Contact your administrator.");
         }
         next(ApiSuccess.ok("Forgot Password Link Sent"));
