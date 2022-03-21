@@ -7,6 +7,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avi Node E.Com</title>
     <link rel="stylesheet" href="/assets/css/styles.css">
+    <style>
+        h4 {
+            margin: 5px 0px 5px 0px;
+        }
+
+        h5 {
+            margin: 5px 0px 5px 0px;
+        }
+
+        .container {
+            width: 50%;
+
+        }
+
+        .api {
+            border-bottom: 1px solid #d1d1d1;
+            padding: 0px 10px 0px 10px;
+        }
+
+        code {
+            left: 10px;
+            overflow-x: hidden;
+        }
+
+        /* width */
+        .api ::-webkit-scrollbar {
+            width: 3px;
+            background: #000;
+        }
+
+        /* Track */
+        .api ::-webkit-scrollbar-track {
+            background: #d1d1d1;
+        }
+
+        /* Handle */
+        .api ::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+    </style>
 </head>
 
 <body>
@@ -15,30 +55,115 @@
         <div>A set of E-commerce API developed for Practice</div>
     </div>
     <div class="container">
-        <div class="api-module">
-            <h3>User(s) Operations</h3>
-            <div class="api">
-                <div class="api-title">
+        <div class="wrapper">
+            <div class="api-module">
+                <h3>User(s) Operations</h3>
+                <div class="api">
                     <h4>Sign-Up</h4>
-                </div>
-                <div class="api-link">
-                    <span>~url~/user/signup</span>
-                </div>
-                <div class="api-body">
-                    <h4>Body</h4>
-                    <pre>
+                    <small>POST ~url~/user/signup</small>
+                    <h5>Body</h5>
+                    <code class="body">
                     {
-                        "name": "Naveen Kumar", ~String/Required
-                        "email": naveen@nodeecom.com, ~String/Required/Unique
-                        "contact": "9876543210", ~Required/Unique
-                        "password": "Agcj2@dksd", ~Required
-                        "role": "Admin", ~Required/Enum:['Admin', 'User']
-                        "address": "12, Moons Appartment", ~String/Required
+                    "name": "Naveen Kumar", ~String/Required
+                    "email": naveen@nodeecom.com, ~String/Required/Unique
+                    "contact": "9876543210", ~Required/Unique
+                    "password": "Agcj2@dksd", ~Required
+                    "role": "Admin", ~Required/Enum:['Admin', 'User']
+                    "address": "12, Moons Appartment", ~String/Required
                     }
-                    </pre>
+                </code>
+                    <p></p>
                 </div>
-                <div class="api-details">
+                <div class="api">
+                    <h4>Login</h4>
+                    <small>POST ~url~/user/login</small>
+                    <h5>Body</h5>
+                    <code class="body">
+                {
+                "email": naveen@nodeecom.com, ~String/Required/Unique
+                "password": "Agcj2@dksd", ~Required
+                }
+            </code>
+                    <p></p>
+                </div>
 
+                <div class="api">
+                    <h4>Logout</h4>
+                    <small>GET ~url~/user/logout</small>
+                    <p></p>
+                </div>
+
+                <div class="api">
+                    <h4>Logout All</h4>
+                    <small>GET ~url~/user/logoutall</small>
+                    <p></p>
+                </div>
+
+                <div class="api">
+                    <h4>Get User</h4>
+                    <small>GET ~url~/user/detail</small>
+                    <p></p>
+                </div>
+
+                <div class="api">
+                    <h4>Update User</h4>
+                    <small>PATCH ~url~/user/update</small>
+                    <h5>Body</h5>
+                    <code class="body">
+                    {
+                    "name": "Naveen Kumar", ~String/Required
+                    "email": naveen@nodeecom.com, ~String/Required/Unique
+                    "contact": "9876543210", ~Required/Unique
+                    "password": "Agcj2@dksd", ~Required
+                    "role": "Admin", ~Required/Enum:['Admin', 'User']
+                    "address": "12, Moons Appartment", ~String/Required
+                    }
+                </code>
+                    <p></p>
+                </div>
+
+                <div class="api">
+                    <h4>Delete user</h4>
+                    <small>DELETE ~url~/user/delete</small>
+                    <p></p>
+                </div>
+
+                <div class="api">
+                    <h4>Avatar</h4>
+                    <small>POST ~url~/user/avatar</small>
+                    <h5>Body</h5>
+                    <code class="body">
+                    {
+                    "avatar": file_upload, ~Form Field/Required/type[JPG/PNG]
+                    }
+                </code>
+                    <p></p>
+                </div>
+
+                <div class="api">
+                    <h4>Forget Password</h4>
+                    <small>POST ~url~/user/forgot</small>
+                    <h5>Body</h5>
+                    <code class="body">
+                    {
+                    "email": naveen@nodeecom.com, ~Required
+                    }
+                </code>
+                    <p></p>
+                </div>
+
+                <div class="api">
+                    <h4>Reset Password</h4>
+                    <small>POST ~url~/user/resetpassword</small>
+                    <h5>Body</h5>
+                    <code class="body">
+                    {
+                    "token": token, ~Required
+                    "password": "Agcj2@dksd", ~Required
+                    "confirm": "Agcj2@dksd", ~Required
+                    }
+                </code>
+                    <p></p>
                 </div>
             </div>
         </div>

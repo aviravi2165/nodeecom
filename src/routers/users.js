@@ -10,9 +10,9 @@ router.post('/user/signup', signUpUser);
 
 router.post('/user/login', userLogin);
 
-router.post('/user/logout', auth, userLogout);
+router.get('/user/logout', auth, userLogout);
 
-router.post('/user/logoutall', auth, userLogoutAll);
+router.get('/user/logoutall', auth, userLogoutAll);
 
 router.get('/user/detail', auth, getUserDetail);
 
