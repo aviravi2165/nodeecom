@@ -109,8 +109,12 @@ const sendForgotPasswordLink = async (req, res, next) => {
         if (!user) {
             throw new Error("User not found");
         }
-        const forgotToken = jwt.sign({ _id: user._id.toString() }, process.env.JWTTOKEN, { expiresIn: '7d' });
-        const body = `<h1>Hi ${user.name}!</h1><div><a href="${req.headers.host}/user/resetpassword/${user._id}/${forgotToken}">Click Here!</a> to proceed for reseting password</div><div>If link doesn't work copy this link and paste it to address bar - ${req.headers.host}/user/resetpassword/${user._id}/${forgotToken}</div><div>Cheers</div><div>NodeEcom</div>`;
+        const forgotToken = jwt.sign({ _id: user._id.toString() }, process.env.JWTFORGOT, { expiresIn: '7d' });
+        const body = `<h1>Hi ${user.name}!</h1>
+                        <div><a href="${req.headers.host}/resetpassword/${user._id}/${forgotToken}">Click Here!</a> to proceed for reseting password</div>
+                        <div>If link doesn't work copy this link and paste it to address bar - ${req.headers.host}/user/resetpassword/${user._id}/${forgotToken}</div>
+                        <div>Cheers</div>
+                    <div>NodeEcom</div>`;
         const subject = "Request for Password Reset";
         const to = req.body.email;
         const from = "no-reply@fivesdigital.com";
@@ -127,6 +131,31 @@ const sendForgotPasswordLink = async (req, res, next) => {
         next(ApiError.badRequest(e.message));
     }
 }
+const resetPassword = async (req, res, next) => {
+    try {
+        if(req.body.password !== req.body.confirm){
+            throw new Error("Password and Confirm password does not match.");
+        }
+        const verifyJWTToken = jwt.verify(req.body.token, process.env.JWTTOKEN);
+        if(!verifyJWTToken) {
+            throw new Error("Token Expired");
+        }
+        const user = await User.findById(verifyJWTToken._id).select('-profileImage');
+        if(user.forgot !== req.body.token){
+            throw new Error("Token does not match");
+        }
+        
+        user.password = req.body.password;
+        user.forgot = "";
+
+        if(!user.save()){
+            throw new Error("Something went wrong. Please contact administrator.");
+        }
+        next(ApiSuccess.ok(user));
+    } catch (e) {
+        next(ApiError.badRequest(e.message));
+    }
+}
 module.exports = {
     signUpUser,
     userLogin,
@@ -137,5 +166,6 @@ module.exports = {
     deletedUser,
     addAvatar,
     showAvatar,
-    sendForgotPasswordLink
+    sendForgotPasswordLink,
+    resetPassword
 }

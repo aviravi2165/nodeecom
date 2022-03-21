@@ -1,1 +1,48 @@
-Hello buddy
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avi Node E.Com</title>
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+
+<body>
+    <div class="banner">
+        <h1>Node E Com</h1>
+        <div>A set of E-commerce API developed for Practice</div>
+    </div>
+    <div class="container">
+        <div class="api-module">
+            <h3>User(s) Operations</h3>
+            <div class="api">
+                <div class="api-title">
+                    <h4>Sign-Up</h4>
+                </div>
+                <div class="api-link">
+                    <span>~url~/user/signup</span>
+                </div>
+                <div class="api-body">
+                    <h4>Body</h4>
+                    <pre>
+                    {
+                        "name": "Naveen Kumar", ~String/Required
+                        "email": naveen@nodeecom.com, ~String/Required/Unique
+                        "contact": "9876543210", ~Required/Unique
+                        "password": "Agcj2@dksd", ~Required
+                        "role": "Admin", ~Required/Enum:['Admin', 'User']
+                        "address": "12, Moons Appartment", ~String/Required
+                    }
+                    </pre>
+                </div>
+                <div class="api-details">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

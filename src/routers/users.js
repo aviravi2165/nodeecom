@@ -1,6 +1,6 @@
 const express = require('express');
 const User = require('../models/user');
-const { signUpUser, userLogin, userLogout, userLogoutAll, getUserDetail, updateUser, deletedUser, addAvatar, showAvatar, sendForgotPasswordLink } = require('../controller/users');
+const { signUpUser, userLogin, userLogout, userLogoutAll, getUserDetail, updateUser, deletedUser, addAvatar, showAvatar, sendForgotPasswordLink, resetPassword } = require('../controller/users');
 const router = new express.Router;
 const { auth } = require('../middleware/auth');
 const multer = require('multer');
@@ -26,6 +26,6 @@ router.get('/user/:id/avatar', showAvatar);
 
 router.post('/user/forgot', sendForgotPasswordLink);
 
-
+router.post('/user/resetpassword', resetPassword);
 
 module.exports = router;
