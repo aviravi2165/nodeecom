@@ -16,9 +16,17 @@
             margin: 5px 0px 5px 0px;
         }
 
-        .container {
-            width: 50%;
+        .banner {
+            height: 10vh;
+        }
 
+        .container {
+            display: flex;
+        }
+
+        .api-module {
+            flex: 1;
+            height: 89vh;
         }
 
         .api {
@@ -26,24 +34,24 @@
             padding: 0px 10px 0px 10px;
         }
 
-        code {
+        div {
             left: 10px;
             overflow-x: hidden;
         }
 
         /* width */
-        .api ::-webkit-scrollbar {
+        .api .body ::-webkit-scrollbar {
             width: 3px;
             background: #000;
         }
 
         /* Track */
-        .api ::-webkit-scrollbar-track {
+        .api .body ::-webkit-scrollbar-track {
             background: #d1d1d1;
         }
 
         /* Handle */
-        .api ::-webkit-scrollbar-thumb {
+        .api .body ::-webkit-scrollbar-thumb {
             background: #888;
         }
     </style>
@@ -55,118 +63,279 @@
         <div>A set of E-commerce API developed for Practice</div>
     </div>
     <div class="container">
-        <div class="wrapper">
-            <div class="api-module">
-                <h3>User(s) Operations</h3>
-                <div class="api">
-                    <h4>Sign-Up</h4>
-                    <small>POST ~url~/user/signup</small>
-                    <h5>Body</h5>
-                    <code class="body">
+        <div class="api-module">
+            <h3>User(s) Operations</h3>
+            <div class="api">
+                <h4>Sign-Up</h4>
+                <small>POST ~url~/user/signup</small>
+                <h5>Body</h5>
+                <div class="body">
+                    <pre>
                     {
-                    "name": "Naveen Kumar", ~String/Required
-                    "email": naveen@nodeecom.com, ~String/Required/Unique
-                    "contact": "9876543210", ~Required/Unique
-                    "password": "Agcj2@dksd", ~Required
-                    "role": "Admin", ~Required/Enum:['Admin', 'User']
-                    "address": "12, Moons Appartment", ~String/Required
+                        "name": "Naveen Kumar", ~String/Required
+                        "email": naveen@nodeecom.com, ~String/Required/Unique
+                        "contact": "9876543210", ~Required/Unique
+                        "password": "Agcj2@dksd", ~Required
+                        "role": "Admin", ~Required/Enum:['Admin', 'User']
+                        "address": "12, Moons Appartment", ~String/Required
                     }
-                </code>
-                    <p></p>
+                    </pre>
                 </div>
-                <div class="api">
-                    <h4>Login</h4>
-                    <small>POST ~url~/user/login</small>
-                    <h5>Body</h5>
-                    <code class="body">
-                {
-                "email": naveen@nodeecom.com, ~String/Required/Unique
-                "password": "Agcj2@dksd", ~Required
-                }
-            </code>
-                    <p></p>
-                </div>
-
-                <div class="api">
-                    <h4>Logout</h4>
-                    <small>GET ~url~/user/logout</small>
-                    <p></p>
-                </div>
-
-                <div class="api">
-                    <h4>Logout All</h4>
-                    <small>GET ~url~/user/logoutall</small>
-                    <p></p>
-                </div>
-
-                <div class="api">
-                    <h4>Get User</h4>
-                    <small>GET ~url~/user/detail</small>
-                    <p></p>
-                </div>
-
-                <div class="api">
-                    <h4>Update User</h4>
-                    <small>PATCH ~url~/user/update</small>
-                    <h5>Body</h5>
-                    <code class="body">
+                <p></p>
+            </div>
+            <div class="api">
+                <h4>Login</h4>
+                <small>POST ~url~/user/login</small>
+                <h5>Body</h5>
+                <div class="body">
+                    <pre>
                     {
-                    "name": "Naveen Kumar", ~String/Required
-                    "email": naveen@nodeecom.com, ~String/Required/Unique
-                    "contact": "9876543210", ~Required/Unique
-                    "password": "Agcj2@dksd", ~Required
-                    "role": "Admin", ~Required/Enum:['Admin', 'User']
-                    "address": "12, Moons Appartment", ~String/Required
+                        "email": naveen@nodeecom.com, ~String/Required/Unique
+                        "password": "Agcj2@dksd", ~Required
                     }
-                </code>
-                    <p></p>
+                    </pre>
                 </div>
+                <p></p>
+            </div>
 
-                <div class="api">
-                    <h4>Delete user</h4>
-                    <small>DELETE ~url~/user/delete</small>
-                    <p></p>
-                </div>
+            <div class="api">
+                <h4>Logout</h4>
+                <small>GET ~url~/user/logout</small>
+                <p></p>
+            </div>
 
-                <div class="api">
-                    <h4>Avatar</h4>
-                    <small>POST ~url~/user/avatar</small>
-                    <h5>Body</h5>
-                    <code class="body">
+            <div class="api">
+                <h4>Logout All</h4>
+                <small>GET ~url~/user/logoutall</small>
+                <p></p>
+            </div>
+
+            <div class="api">
+                <h4>Get User</h4>
+                <small>GET ~url~/user/detail</small>
+                <p></p>
+            </div>
+
+            <div class="api">
+                <h4>Update User</h4>
+                <small>PATCH ~url~/user/update</small>
+                <h5>Body</h5>
+                <div class="body">
+                    <pre>
                     {
-                    "avatar": file_upload, ~Form Field/Required/type[JPG/PNG]
+                        "name": "Naveen Kumar", ~String/Required
+                        "email": naveen@nodeecom.com, ~String/Required/Unique
+                        "contact": "9876543210", ~Required/Unique
+                        "password": "Agcj2@dksd", ~Required
+                        "role": "Admin", ~Required/Enum:['Admin', 'User']
+                        "address": "12, Moons Appartment", ~String/Required
                     }
-                </code>
-                    <p></p>
+                    </pre>
                 </div>
+                <p></p>
+            </div>
 
-                <div class="api">
-                    <h4>Forget Password</h4>
-                    <small>POST ~url~/user/forgot</small>
-                    <h5>Body</h5>
-                    <code class="body">
-                    {
-                    "email": naveen@nodeecom.com, ~Required
-                    }
-                </code>
-                    <p></p>
-                </div>
+            <div class="api">
+                <h4>Delete user</h4>
+                <small>DELETE ~url~/user/delete</small>
+                <p></p>
+            </div>
 
-                <div class="api">
-                    <h4>Reset Password</h4>
-                    <small>POST ~url~/user/resetpassword</small>
-                    <h5>Body</h5>
-                    <code class="body">
+            <div class="api">
+                <h4>Avatar</h4>
+                <small>POST ~url~/user/avatar</small>
+                <h5>Body</h5>
+                <div class="body">
+                    <pre>
                     {
-                    "token": token, ~Required
-                    "password": "Agcj2@dksd", ~Required
-                    "confirm": "Agcj2@dksd", ~Required
+                        "avatar": file_upload, ~Form Field/Required/type[JPG/PNG]
                     }
-                </code>
-                    <p></p>
+                    </pre>
                 </div>
+                <p></p>
+            </div>
+
+            <div class="api">
+                <h4>Forget Password</h4>
+                <small>POST ~url~/user/forgot</small>
+                <h5>Body</h5>
+                <div class="body">
+                    <pre>
+                    {
+                        "email": naveen@nodeecom.com, ~Required
+                    }
+                    </pre>
+                </div>
+                <p></p>
+            </div>
+
+            <div class="api">
+                <h4>Reset Password</h4>
+                <small>POST ~url~/user/resetpassword</small>
+                <h5>Body</h5>
+                <div class="body">
+                    <pre>
+                    {
+                        "token": token, ~Required
+                        "password": "Agcj2@dksd", ~Required
+                        "confirm": "Agcj2@dksd", ~Required
+                    }
+                    </pre>
+                </div>
+                <p></p>
             </div>
         </div>
+
+        <!-- ============================================================================================================================================ -->
+
+        <div class="api-module">
+            <h3>Product(s) Operations</h3>
+            <div class="api">
+                <h4>Add</h4>
+                <small>POST ~url~/product</small>
+                <h5>Body</h5>
+                <div class="body">
+                    <pre>
+                    {
+                        "name": "Product Name", ~String/Required
+                        "price": "15000", ~Number/Required
+                        "discount": 10, ~Number
+                        "rating": "4.5", ~Number
+                        "categoryId": "category Id" ~ID from category collection
+                        "description": "Product Details", ~String
+                        "uom": "Nos", ~String/Required
+                        "tax": "18" ~Number
+                    }
+                    </pre>
+                </div>
+                <p></p>
+            </div>
+            <div class="api">
+                <h4>List All</h4>
+                <small>GET ~url~/products?sort=fieldName_ASC/DSC&limit=50&skip=2&match=fieldName_value</small>
+                <h5>Body</h5>
+                <p></p>
+            </div>
+
+            <div class="api">
+                <h4>Update</h4>
+                <small>PATCH ~url~/product/6217128a12e9774d6058fd3a</small>
+                <h5>Body</h5>
+                <div class="body">
+                    <pre>
+                    {
+                        "name": "Product Name", ~String/Required
+                        "price": "15000", ~Number/Required
+                        "discount": 10, ~Number
+                        "rating": "4.5", ~Number
+                        "categoryId": "category Id" ~ID from category collection
+                        "description": "Product Details", ~String
+                        "uom": "Nos", ~String/Required
+                        "tax": "18" ~Number
+                    }
+                    </pre>
+                </div>
+                <p></p>
+            </div>
+
+            <div class="api">
+                <h4>Delete</h4>
+                <small>GET ~url~/product/:productId</small>
+                <p></p>
+            </div>
+
+            <div class="api">
+                <h4>Product Detail</h4>
+                <small>GET ~url~/product/:productId</small>
+                <p></p>
+            </div>
+
+            <div class="api">
+                <h4>Add Image</h4>
+                <small>POST ~url~/product/image/:productId</small>
+                <h5>Body</h5>
+                <div class="body">
+                    <pre>
+                    {
+                        "productImage": file_upload, ~Form Field/Required/type[JPG/PNG]
+                    }
+                    </pre>
+                </div>
+                <p></p>
+            </div>
+            <div class="api">
+                <h4>Image Prievew</h4>
+                <small>GET ~url~/product/image/:productId/preview</small>
+                <p></p>
+            </div>
+        </div>
+
+
+        <!-- ============================================================================================================================================ -->
+
+        <div class="api-module">
+            <h3>Category(s) Operations</h3>
+            <div class="api">
+                <h4>Add</h4>
+                <small>POST ~url~/category/add</small>
+                <h5>Body</h5>
+                <div class="body">
+                    <pre>
+                    {
+                        "name":"Category Name" ~String/Required
+                        "parent":"Parent Category Name" ~String/Required
+                    }
+                    </pre>
+                </div>
+                <p></p>
+            </div>
+            <div class="api">
+                <h4>Update</h4>
+                <small>PATCH ~url~/category/update/6221d95d908431863ab361b9</small>
+                <h5>Body</h5>
+                <pre>
+                    {
+                        "name":"Category Name" ~String/Required
+                        "parent":"Parent Category Name" ~String/Required
+                    }
+                </pre>
+                <p></p>
+            </div>
+
+            <div class="api">
+                <h4>List All</h4>
+                <small>GET ~url~/category/list</small>
+                <p></p>
+            </div>
+
+            <div class="api">
+                <h4>Detail</h4>
+                <small>GET ~url~/category/:categoryID</small>
+                <p></p>
+            </div>
+
+            <div class="api">
+                <h4>Add Image</h4>
+                <small>POST ~url~/category/image/:categoryID</small>
+                <h5>Body</h5>
+                <div class="body">
+                    <pre>
+                    {
+                        "productImage": file_upload, ~Form Field/Required/type[JPG/PNG]
+                    }
+                    </pre>
+                </div>
+                <p></p>
+            </div>
+
+            <div class="api">
+                <h4>Image Prievew</h4>
+                <small>GET ~url~/category/image/:categoryID/preview</small>
+                <p></p>
+            </div>
+
+        </div>
+
     </div>
 </body>
 

@@ -1,6 +1,10 @@
 const Product = require('../models/product');
 const ApiError = require('../errors/apiError');
 const ApiSuccess = require('../success/apiSuccess');
+const uploadFileMulter = require('../uploader/fileupload');
+const multer = require('multer');
+
+const upload = uploadFileMulter('./uploads', 'product_name_', 'productImage');
 
 const addNewProduct = async (req, res, next) => {
     try {
@@ -41,12 +45,34 @@ const listProducts = async (req, res, next) => {
                 throw new Error("Match field is not allowed");
             match[matchOn[0]] = matchOn[1];
         }
-        const products = await Product.find(match)
+        // const products = await Product.find(match)
+        //     .populate('owner')
+        //     .populate('categoryId')
+        //     .sort(sortParam)
+        //     .limit(limit)
+        //     .skip(skip);
+
+        const products = await Product.find()
             .populate('owner')
             .populate('categoryId')
             .sort(sortParam)
             .limit(limit)
             .skip(skip);
+
+
+        // const products = await Product.aggregate.lookup({
+        //     from: 'categories',
+        //     localField: 'categoryId',
+        //     foreignField: '_id',
+        //     as: 'cat_name'
+        // });
+
+        // const products = await Product.aggregate([
+        //     { $lookup: { from: 'categories', localField: 'categoryId', foreignField: '_id', as: 'catName' } },
+        //     { $match: {} },
+        //     { $group: { _id: '$catName.name', total: { $sum: '$price' } } },
+        //     { $project: { 'Category Name': '$_id', 'Total': '$total', _id: 0 } }
+        // ]);
 
         if (products.length < 1) throw new Error("No Records Found");
         next(ApiSuccess.ok(products));
@@ -108,14 +134,27 @@ const uploadProductImage = async (req, res, next) => {
     }
 }
 
-const showProductImage = async (req,res) => {
+const uploadProductImageLoc = async (req, res, next) => {
+    try {
+        await upload(req, res, function (err) {
+            if (err instanceof multer.MulterError) {
+                throw new Error(err);
+            }
+            next(ApiSuccess.ok(req.file));
+        })
+    } catch (e) {
+        next(ApiError.badRequest(e.message));
+    }
+}
+
+const showProductImage = async (req, res) => {
     const id = req.params.id;
     const product = await Product.findById(id).select('name image');
     let image = "";
-    if(product.image) {
+    if (product.image) {
         image = product.image;
     }
-    res.set('Content-Type','image/jpg');
+    res.set('Content-Type', 'image/jpg');
     res.send(image);
 }
 
@@ -126,5 +165,6 @@ module.exports = {
     deleteProduct,
     getSpecificProduct,
     uploadProductImage,
-    showProductImage
+    showProductImage,
+    uploadProductImageLoc
 };
