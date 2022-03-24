@@ -13,13 +13,14 @@ const uploadFileMulter = (path, fileNamePrefix, fieldName) => {
         storage: storage,
         fileFilter(req, file, callback) {
             if (!file.originalname.match(/\.(png|jpg|jpeg)/i)) {
-                return new Error("Only PNG, JPEG files allowed");
+                callback(new Error("Only PNG,JPG and JPEG is allowed."));
+            }else{
+                callback(null, true);
             }
-            callback(undefined, true);
         }
 
-    }).single(fieldName);
-    return upload;
+    });
+    return upload.single(fieldName);
 }
 
 module.exports = uploadFileMulter;

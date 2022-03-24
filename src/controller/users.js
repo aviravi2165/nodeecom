@@ -3,6 +3,11 @@ const ApiError = require('../errors/apiError');
 const ApiSuccess = require('../success/apiSuccess');
 const mailNow = require('../mail/mailer');
 const jwt = require('jsonwebtoken');
+const uploadFileMulter = require('../uploader/fileupload');
+const fs = require('fs');
+
+const upload = uploadFileMulter('./uploads/users', 'profileImage_', 'profileImage');
+
 
 const signUpUser = async (req, res, next) => {
     try {
@@ -72,33 +77,38 @@ const deletedUser = async (req, res, next) => {
     }
 }
 const addAvatar = async (req, res, next) => {
-    try {
-        if (!['image/jpg', 'image/png'].some(mime => mime === req.file.mimetype)) {
-            throw new Error('Only JPG and PNG allowed');
+    const id = req.user._id;
+    upload(req, res, async function (err) {
+        try {
+            if (err) {
+                throw new Error(err);
+            }
+            const user = await User.findById(id);
+            if (!user) {
+                throw new Error('User Not found');
+            }
+            const userUpdated = await User.findByIdAndUpdate(id, { profileImage: req.file.filename });
+            if (!userUpdated) {
+                throw new Error("Something went wrong");
+            }
+            next(ApiSuccess.ok("Avatar Uploaded"));
+        } catch (e) {
+            next(ApiError.badRequest(e.message));
         }
-        if (req.file.size > 5000000) {
-            throw new Error('make to upload file less than 5MB');
-        }
-        const user = await User.findByIdAndUpdate(req.user._id, { profileImage: req.file.buffer });
-        if (!user) throw new Error("User cannot be changed");
-        next(ApiSuccess.ok(user));
-    } catch (e) {
-        next(ApiError.badRequest(e.message));
-    }
+    });
 }
 const showAvatar = async (req, res) => {
     const id = req.params.id;
     const user = await User.findById(id).select('name profileImage');
     let image;
     if (!user) throw new Error("User not found!");
-    if (user.profileImage) {
-        image = user.profileImage;
+    if (!user.profileImage) {
     }
-    else {
-        image = user.profileImage;
-    }
-    res.set('Content-Type', 'image/jpg');
-    res.send(image);
+    fs.readFile(`./uploads/users/${user.profileImage}`, function (err, data) {
+        const ext = user.profileImage.slice(user.profileImage.lastIndexOf('.') + 1);
+        res.set('Content-Type', `image/${ext}`);
+        res.send(data);
+    });
 }
 const sendForgotPasswordLink = async (req, res, next) => {
     try {
@@ -133,22 +143,22 @@ const sendForgotPasswordLink = async (req, res, next) => {
 }
 const resetPassword = async (req, res, next) => {
     try {
-        if(req.body.password !== req.body.confirm){
+        if (req.body.password !== req.body.confirm) {
             throw new Error("Password and Confirm password does not match.");
         }
         const verifyJWTToken = jwt.verify(req.body.token, process.env.JWTTOKEN);
-        if(!verifyJWTToken) {
+        if (!verifyJWTToken) {
             throw new Error("Token Expired");
         }
         const user = await User.findById(verifyJWTToken._id).select('-profileImage');
-        if(user.forgot !== req.body.token){
+        if (user.forgot !== req.body.token) {
             throw new Error("Token does not match");
         }
-        
+
         user.password = req.body.password;
         user.forgot = "";
 
-        if(!user.save()){
+        if (!user.save()) {
             throw new Error("Something went wrong. Please contact administrator.");
         }
         next(ApiSuccess.ok(user));

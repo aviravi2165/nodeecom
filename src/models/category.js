@@ -11,7 +11,7 @@ const categorySchema = new mongoose.Schema({
         default: "0"
     },
     image: {
-        type: Buffer
+        type: String
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,

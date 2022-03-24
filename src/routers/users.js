@@ -3,8 +3,6 @@ const User = require('../models/user');
 const { signUpUser, userLogin, userLogout, userLogoutAll, getUserDetail, updateUser, deletedUser, addAvatar, showAvatar, sendForgotPasswordLink, resetPassword } = require('../controller/users');
 const router = new express.Router;
 const { auth } = require('../middleware/auth');
-const multer = require('multer');
-const upload = multer();
 
 router.post('/user/signup', signUpUser);
 
@@ -20,7 +18,7 @@ router.patch('/user/update', auth, updateUser);
 
 router.delete('/user/delete', auth, deletedUser);
 
-router.post('/user/avatar', auth, upload.single('avatar'), addAvatar);
+router.post('/user/avatar', auth, addAvatar);
 
 router.get('/user/:id/avatar', showAvatar);
 

@@ -2,9 +2,9 @@ const Product = require('../models/product');
 const ApiError = require('../errors/apiError');
 const ApiSuccess = require('../success/apiSuccess');
 const uploadFileMulter = require('../uploader/fileupload');
-const multer = require('multer');
-
-const upload = uploadFileMulter('./uploads', 'product_name_', 'productImage');
+const upload = uploadFileMulter('./uploads/products', 'product_name_', 'productImage');
+const fs = require('fs');
+const path = require('path');
 
 const addNewProduct = async (req, res, next) => {
     try {
@@ -119,43 +119,39 @@ const getSpecificProduct = async (req, res, next) => {
 }
 
 const uploadProductImage = async (req, res, next) => {
-    try {
-        const id = req.params.id;
-        if (!['image/jpg', 'image/png'].some(mime => mime === req.file.mimetype)) {
-            throw new Error('Only JPG and PNG allowed');
-        }
-        if (req.file.size > 5000000) {
-            throw new Error('make to upload file less than 5MB');
-        }
-        const product = await Product.findByIdAndUpdate(id, { image: req.file.buffer });
-        next(ApiSuccess.ok(product));
-    } catch (e) {
-        next(ApiError.badRequest(e.message));
-    }
-}
-
-const uploadProductImageLoc = async (req, res, next) => {
-    try {
-        await upload(req, res, function (err) {
-            if (err instanceof multer.MulterError) {
+    const id = req.params.id;
+    upload(req, res, async function (err) {
+        try {
+            if (err) {
                 throw new Error(err);
             }
-            next(ApiSuccess.ok(req.file));
-        })
-    } catch (e) {
-        next(ApiError.badRequest(e.message));
-    }
+            const product = await Product.findById(id);
+            if (!product) {
+                throw new Error("User Not found.");
+            }
+
+            const isUpdated = await Product.findByIdAndUpdate(id, { image: req.file.filename });
+            if (!isUpdated) {
+                throw new Error("Something went wrong.");
+            }
+            next(ApiSuccess.ok(res.json(isUpdated)));
+        } catch (e) {
+            next(ApiError.badRequest(e.message));
+        }
+    });
 }
 
 const showProductImage = async (req, res) => {
     const id = req.params.id;
-    const product = await Product.findById(id).select('name image');
+    const product = await Product.findById(id).select('image');
     let image = "";
-    if (product.image) {
-        image = product.image;
+    if (!product.image) {
     }
-    res.set('Content-Type', 'image/jpg');
-    res.send(image);
+    fs.readFile(`./uploads/products/${product.image}`, function (err, data) {
+        const ext = product.image.slice(product.image.lastIndexOf('.')+1);
+        res.set('Content-Type', `image/${ext}`);
+        res.send(data);
+    });
 }
 
 module.exports = {
@@ -165,6 +161,5 @@ module.exports = {
     deleteProduct,
     getSpecificProduct,
     uploadProductImage,
-    showProductImage,
-    uploadProductImageLoc
+    showProductImage
 };

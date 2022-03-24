@@ -1,9 +1,7 @@
 const express = require('express');
 const Category = require('../models/category');
 const { auth } = require('../middleware/auth');
-const { addCategory, updateCategory, listCategory, getCategory, uploadCategory, showCategoryImage } = require('../controller/category');
-const multer = require('multer');
-const upload = multer();
+const { addCategory, updateCategory, listCategory, getCategory, uploadCategoryImage, showCategoryImage } = require('../controller/category');
 
 const router = new express.Router;
 
@@ -15,8 +13,8 @@ router.get('/category/list', auth, listCategory);
 
 router.get('/category/:id', auth, getCategory);
 
-router.post('/category/image/:id', auth, upload.single('categoryUpload'), uploadCategory);
+router.post('/category/image/:id', auth, uploadCategoryImage);
 
-router.get('/category/image/:id/preview',  showCategoryImage);
+router.get('/category/image/:id/preview', showCategoryImage);
 
 module.exports = router;

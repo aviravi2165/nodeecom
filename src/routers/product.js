@@ -1,10 +1,8 @@
 const express = require('express');
 const Product = require('../models/product');
-const multer = require('multer');
 const { auth } = require('../middleware/auth');
-const { addNewProduct, listProducts, updateProduct, deleteProduct, getSpecificProduct, showProductImage, uploadProductImage, uploadProductImageLoc } = require('../controller/products');
+const { addNewProduct, listProducts, updateProduct, deleteProduct, getSpecificProduct, showProductImage, uploadProductImage } = require('../controller/products');
 const router = new express.Router;
-const uploadBuffer = multer(); 
 
 router.post('/product', auth, addNewProduct);
 
@@ -16,9 +14,7 @@ router.delete('/product/:id', auth, deleteProduct);
 
 router.get('/product/:id', auth, getSpecificProduct);
 
-router.post('/product/image/:id', auth, uploadBuffer.single('productImage'), uploadProductImage);
-
-router.post('/product/imageloc/:id', auth, uploadProductImageLoc);
+router.post('/product/image/:id', auth, uploadProductImage);
 
 router.get('/product/image/:id/preview', showProductImage);
 

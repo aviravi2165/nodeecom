@@ -2,6 +2,11 @@ const Category = require('../models/category');
 const User = require('../models/user');
 const ApiError = require('../errors/apiError');
 const ApiSuccess = require('../success/apiSuccess');
+const fs = require('fs');
+
+
+const uploadFileMulter = require('../uploader/fileupload');
+const upload = uploadFileMulter('./uploads/categories', 'category_image_', 'categoryUpload');
 
 const addCategory = async (req, res, next) => {
     try {
@@ -73,37 +78,40 @@ const getCategory = async (req, res, next) => {
     }
 }
 
-const uploadCategory = async (req, res, next) => {
-    try {
-        const id = req.params.id;
-        if (!['image/jpeg', 'image/png'].some(mime => mime === req.file.mimetype)) {
-            throw new Error('Only JPG and PNG allowed');
+const uploadCategoryImage = async (req, res, next) => {
+    const id = req.params.id;
+    upload(req, res, async function (err) {
+        try {
+            if (err) {
+                throw new Error(err);
+            }
+            const category = await Category.findById(id);
+            if (!category) {
+                throw new Error("Category not found");
+            }
+            const categoryUpdated = await Category.findByIdAndUpdate(id, { image: req.file.filename });
+            if (!categoryUpdated) {
+                throw new Error("Something went wrong");
+            }
+            next(ApiSuccess.ok("Category Image Uploaded"));
+        } catch (e) {
+            next(ApiError.badRequest(e.message));
         }
-        if (req.file.size > 5000000) {
-            throw new Error('make to upload file less than 5MB');
-        }
-        const category = await Category.findByIdAndUpdate(id, { image: req.file.buffer });
-        if (!category) {
-            throw new Error("No data found");
-        }
-        next(ApiSuccess.ok(category));
-    } catch (e) {
-        next(ApiError.badRequest(e.message));
-    }
+    });
 }
 
 const showCategoryImage = async (req, res) => {
-        const id = req.params.id;
-        const category = await Category.findById(id).select('name image');
-        let image;
-        if(category.image){
-            image = category.image;
-        }
-        else{
-            image = "";
-        }
-        res.set('Content-Type','image/jpg');
-        res.send(image);
+    const id = req.params.id;
+    const category = await Category.findById(id).select('image');
+    let image;
+    if (!category.image) {
+
+    }
+    fs.readFile(`./uploads/categories/${category.image}`, function (err, data) {
+        const ext = category.image.slice(category.image.lastIndexOf('.') + 1);
+        res.set('Content-Type', `image/${ext}`);
+        res.send(data);
+    });
 }
 
 
@@ -112,6 +120,6 @@ module.exports = {
     updateCategory,
     listCategory,
     getCategory,
-    uploadCategory,
+    uploadCategoryImage,
     showCategoryImage
 }
